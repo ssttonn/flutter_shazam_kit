@@ -1,6 +1,13 @@
+import 'package:flutter_shazam_kit/models/detecting_state.dart';
+import 'package:flutter_shazam_kit/models/error.dart';
+import 'package:flutter_shazam_kit/models/media_item.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_shazam_kit_method_channel.dart';
+
+typedef OnMediaItemsDiscovered = Function(List<MediaItem>);
+typedef OnError = Function(MainError error);
+typedef OnDetectStateChanged = Function(DetectState state);
 
 abstract class FlutterShazamKitPlatform extends PlatformInterface {
   /// Constructs a FlutterShazamKitPlatform.
@@ -22,6 +29,10 @@ abstract class FlutterShazamKitPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  OnMediaItemsDiscovered? onDiscovered;
+  OnError? onErrorCallback;
+  OnDetectStateChanged? onDetectStateChanged;
+
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
@@ -31,11 +42,19 @@ abstract class FlutterShazamKitPlatform extends PlatformInterface {
         'isShazamKitAvailable() has not been implemented.');
   }
 
-  Future startRecording() {
-    throw UnimplementedError('startRecording() has not been implemented.');
+  Future configureAudio() {
+    throw UnimplementedError('configureAudio() has not been implemented.');
   }
 
-  Future endRecording() {
-    throw UnimplementedError('endRecording() has not been implemented.');
+  Future startDetectingByMicrophone(
+      {required OnMediaItemsDiscovered onDiscovered,
+      required OnDetectStateChanged onDetectStateChanged,
+      required OnError onErrorCallback}) {
+    throw UnimplementedError(
+        'startDetectingByMicrophone() has not been implemented.');
+  }
+
+  Future endDetecting() {
+    throw UnimplementedError('endDetecting() has not been implemented.');
   }
 }

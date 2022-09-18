@@ -1,0 +1,1 @@
+enum DetectState { none, detecting }
