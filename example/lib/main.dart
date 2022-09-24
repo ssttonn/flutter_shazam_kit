@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shazam_kit/flutter_shazam_kit.dart';
+import 'package:flutter_shazam_kit/models/result.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,13 +20,31 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _flutterShazamKitPlugin = FlutterShazamKit();
   DetectState _state = DetectState.none;
-  List<MediaItem> _mediaItems = [];
+  final List<MediaItem> _mediaItems = [];
 
   @override
   void initState() {
     super.initState();
-    _flutterShazamKitPlugin.configureShazamKitSession(
-        developerToken: developerToken);
+    _flutterShazamKitPlugin
+        .configureShazamKitSession(developerToken: developerToken)
+        .then((value) {
+      _flutterShazamKitPlugin.onMatchResultDiscovered((result) {
+        if (result is Matched) {
+          setState(() {
+            _mediaItems.insertAll(0, result.mediaItems);
+          });
+        } else if (result is NoMatch) {
+          // do something in no match case
+        }
+        _flutterShazamKitPlugin.endDetecting();
+      });
+      _flutterShazamKitPlugin.onDetectStateChanged((state) {
+        setState(() {
+          _state = state;
+        });
+      });
+      _flutterShazamKitPlugin.onError((error) {});
+    });
   }
 
   @override
@@ -41,16 +60,9 @@ class _MyAppState extends State<MyApp> {
 
   Widget _body() {
     final theme = Theme.of(context);
-    return FutureBuilder<bool>(
-        future: _flutterShazamKitPlugin.isShazamKitAvailable(),
-        builder: ((context, snapshot) {
-          return Column(
-            children: [
-              _detectButton(theme),
-              Expanded(child: _detectedItems(theme))
-            ],
-          );
-        }));
+    return Column(
+      children: [_detectButton(theme), Expanded(child: _detectedItems(theme))],
+    );
   }
 
   Widget _detectButton(ThemeData theme) {
@@ -96,7 +108,7 @@ class _MyAppState extends State<MyApp> {
           return Container(
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-                color: Color(0xFFF5f5f5),
+                color: const Color(0xFFF5f5f5),
                 borderRadius: BorderRadius.circular(10)),
             child: Row(
               children: [
@@ -141,19 +153,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   startDetect() async {
-    _flutterShazamKitPlugin.startDetectingByMicrophone(
-        onDiscovered: (mediaItems) {
-          setState(() {
-            _mediaItems.insertAll(0, mediaItems);
-          });
-          _flutterShazamKitPlugin.endDetecting();
-        },
-        onDetectStateChanged: (state) {
-          setState(() {
-            _state = state;
-          });
-        },
-        onErrorCallback: (error) {});
+    _flutterShazamKitPlugin.startDetectingByMicrophone();
   }
 
   endDetect() {

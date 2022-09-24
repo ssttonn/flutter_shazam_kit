@@ -21,13 +21,12 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "isShazamKitAvailable":
-            result(true)
         case "configureShazamKitSession":
             configureShazamKitSession()
+            result(nil)
         case "startDetectingByMicrophone":
             do{
-                configureAudio(result: result)
+                configureAudio()
                 try startListening(result: result)
             }catch{
                 callbackChannel?.invokeMethod("didHasError", arguments: error.localizedDescription)
@@ -36,7 +35,7 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
             stopListening()
             result(nil)
         default:
-            print("Default case")
+            result(nil)
         }
     }
 }
@@ -57,7 +56,7 @@ extension SwiftFlutterShazamKitPlugin{
         session?.matchStreamingBuffer(buffer, at: audioTime)
     }
     
-    func configureAudio(result: FlutterResult){
+    func configureAudio(){
         let inputFormat = audioEngine.inputNode.inputFormat(forBus: 0)
         
         // Set an output format compatible with ShazamKit.
@@ -77,7 +76,6 @@ extension SwiftFlutterShazamKitPlugin{
             // Add captured audio to the buffer used for making a match.
             self.addAudio(buffer: buffer, audioTime: audioTime)
         }
-        result(nil)
     }
     
     func startListening(result: FlutterResult) throws {
@@ -145,13 +143,14 @@ extension SwiftFlutterShazamKitPlugin: SHSessionDelegate{
         do{
             let jsonData = try JSONSerialization.data(withJSONObject: mediaItems)
             let jsonString = String(data: jsonData, encoding: .utf8)
-            self.callbackChannel?.invokeMethod("mediaItemsFound", arguments: jsonString)
+            self.callbackChannel?.invokeMethod("matchFound", arguments: jsonString)
         }catch{
             callbackChannel?.invokeMethod("didHasError", arguments: "Error when trying to format data, please try again")
         }
     }
     
     public func session(_ session: SHSession, didNotFindMatchFor signature: SHSignature, error: Error?) {
+        callbackChannel?.invokeMethod("notFound", arguments: nil)
         callbackChannel?.invokeMethod("didHasError", arguments: error?.localizedDescription)
     }
 }

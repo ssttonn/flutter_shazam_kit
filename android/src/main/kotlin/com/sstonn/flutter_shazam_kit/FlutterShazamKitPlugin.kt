@@ -13,6 +13,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.lang.Exception
 
 
 /** FlutterShazamKitPlugin */
@@ -44,7 +45,6 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "isShazamKitAvailable" -> result.success(true)
             "configureShazamKitSession" -> shazamManager.configureShazamKitSession(
                 call.argument("developerToken"),
                 result
@@ -57,6 +57,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
+                    //TODO: handle granted permission flow
                     activityBinding?.activity?.let { ActivityCompat.requestPermissions(it,arrayOf(Manifest.permission.RECORD_AUDIO),1) }
                     return
                 }

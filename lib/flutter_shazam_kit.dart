@@ -7,10 +7,19 @@ export './models/error.dart';
 export './models/media_item.dart';
 
 class FlutterShazamKit {
-  /// check if whether the shazamkit is available on this device
-  /// [isShazamKitAvailable] return a boolean
-  Future<bool> isShazamKitAvailable() {
-    return FlutterShazamKitPlatform.instance.isShazamKitAvailable();
+  void onMatchResultDiscovered(
+      OnMatchResultDiscovered onMatchResultDiscovered) {
+    return FlutterShazamKitPlatform.instance
+        .onMatchResultDiscovered(onMatchResultDiscovered);
+  }
+
+  void onDetectStateChanged(OnDetectStateChanged onDetectStateChanged) {
+    return FlutterShazamKitPlatform.instance
+        .onDetectStateChanged(onDetectStateChanged);
+  }
+
+  void onError(OnError onError) {
+    return FlutterShazamKitPlatform.instance.onError(onError);
   }
 
   Future configureShazamKitSession({String? developerToken}) {
@@ -18,14 +27,8 @@ class FlutterShazamKit {
         .configureShazamKitSession(developerToken: developerToken);
   }
 
-  Future startDetectingByMicrophone(
-      {required OnMediaItemsDiscovered onDiscovered,
-      required OnDetectStateChanged onDetectStateChanged,
-      required OnError onErrorCallback}) {
-    return FlutterShazamKitPlatform.instance.startDetectingByMicrophone(
-        onDiscovered: onDiscovered,
-        onDetectStateChanged: onDetectStateChanged,
-        onErrorCallback: onErrorCallback);
+  Future startDetectingByMicrophone() {
+    return FlutterShazamKitPlatform.instance.startDetectingByMicrophone();
   }
 
   Future endDetecting() {

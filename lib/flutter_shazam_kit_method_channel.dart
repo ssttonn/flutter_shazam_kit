@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_shazam_kit/models/detecting_state.dart';
 import 'package:flutter_shazam_kit/models/error.dart';
 import 'package:flutter_shazam_kit/models/media_item.dart';
+import 'package:flutter_shazam_kit/models/result.dart';
 
 import 'flutter_shazam_kit_platform_interface.dart';
 
@@ -25,10 +26,13 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
 
   Future _nativeMethodHandler(MethodCall call) async {
     switch (call.method) {
-      case "mediaItemsFound":
+      case "matchFound":
         List<MediaItem> items =
             _parseMediaItemsFromJsonString(call.arguments as String? ?? "");
-        onDiscovered?.call(items);
+        onMatchResultDiscoveredCallback?.call(Matched(mediaItems: items));
+        break;
+      case "notFound":
+        onMatchResultDiscoveredCallback?.call(NoMatch());
         break;
       case "didHasError":
         String errorMessage = call.arguments;
@@ -36,7 +40,7 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
         break;
       case "detectStateChanged":
         int stateIndex = call.arguments as int? ?? 0;
-        onDetectStateChanged?.call(DetectState.values[stateIndex]);
+        onDetectStateChangedCallback?.call(DetectState.values[stateIndex]);
         break;
     }
   }
@@ -54,14 +58,6 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future<bool> isShazamKitAvailable() async {
-    final isShazamKitAvailable =
-        (await methodChannel.invokeMethod<bool?>("isShazamKitAvailable")) ??
-            false;
-    return isShazamKitAvailable;
-  }
-
-  @override
   Future configureShazamKitSession({String? developerToken}) {
     return methodChannel.invokeMethod(
         "configureShazamKitSession",
@@ -71,13 +67,23 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future startDetectingByMicrophone(
-      {required OnMediaItemsDiscovered onDiscovered,
-      required OnDetectStateChanged onDetectStateChanged,
-      required OnError onErrorCallback}) {
-    this.onDiscovered = onDiscovered;
-    this.onDetectStateChanged = onDetectStateChanged;
-    this.onErrorCallback = onErrorCallback;
+  void onMatchResultDiscovered(
+      OnMatchResultDiscovered onMatchResultDiscovered) {
+    onMatchResultDiscoveredCallback = onMatchResultDiscovered;
+  }
+
+  @override
+  void onDetectStateChanged(OnDetectStateChanged onDetectStateChanged) {
+    onDetectStateChangedCallback = onDetectStateChanged;
+  }
+
+  @override
+  void onError(OnError onError) {
+    onErrorCallback = onError;
+  }
+
+  @override
+  Future startDetectingByMicrophone() {
     return methodChannel.invokeMethod(
       "startDetectingByMicrophone",
     );
