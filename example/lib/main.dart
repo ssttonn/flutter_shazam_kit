@@ -6,6 +6,9 @@ void main() {
   runApp(const MyApp());
 }
 
+const developerToken =
+    "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjNGVjc1SFBRQ0sifQ.eyJpYXQiOjE2NjQwMDgwNTcsImV4cCI6MTY3OTU2MDA1NywiaXNzIjoiN1ZINlUyMlNWQiJ9.45BQ52oKZ9e9-AKf1sXvpimvOuHS7faoegpCz9Cw2KAkNzG2TxLDprVjn45suTHCFIlgqwH9mz3wf7IrOy1t7w";
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -21,6 +24,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _flutterShazamKitPlugin.configureShazamKitSession(
+        developerToken: developerToken);
   }
 
   @override
@@ -136,21 +141,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   startDetect() async {
-    _flutterShazamKitPlugin.configureAudio().then((value) {
-      _flutterShazamKitPlugin.startDetectingByMicrophone(
-          onDiscovered: (mediaItems) {
-            setState(() {
-              _mediaItems.insertAll(0, mediaItems);
-            });
-            _flutterShazamKitPlugin.endDetecting();
-          },
-          onDetectStateChanged: (state) {
-            setState(() {
-              _state = state;
-            });
-          },
-          onErrorCallback: (error) {});
-    });
+    _flutterShazamKitPlugin.startDetectingByMicrophone(
+        onDiscovered: (mediaItems) {
+          setState(() {
+            _mediaItems.insertAll(0, mediaItems);
+          });
+          _flutterShazamKitPlugin.endDetecting();
+        },
+        onDetectStateChanged: (state) {
+          setState(() {
+            _state = state;
+          });
+        },
+        onErrorCallback: (error) {});
   }
 
   endDetect() {

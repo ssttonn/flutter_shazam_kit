@@ -23,14 +23,11 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "isShazamKitAvailable":
             result(true)
-        case "configureAudio":
-            configureAudio(result: result)
+        case "configureShazamKitSession":
+            configureShazamKitSession()
         case "startDetectingByMicrophone":
             do{
-                if (session == nil) {
-                    session = SHSession()
-                    session?.delegate = self
-                }
+                configureAudio(result: result)
                 try startListening(result: result)
             }catch{
                 callbackChannel?.invokeMethod("didHasError", arguments: error.localizedDescription)
@@ -48,6 +45,12 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
 //MARK: Methods for AVAudio
 @available(iOS 15.0, *)
 extension SwiftFlutterShazamKitPlugin{
+    func configureShazamKitSession(){
+        if session == nil{
+            session = SHSession()
+            session?.delegate = self
+        }
+    }
     
     func addAudio(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
         // Add the audio to the current match request

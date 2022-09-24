@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +43,7 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
 
   List<MediaItem> _parseMediaItemsFromJsonString(String jsonString) {
     try {
+      inspect(jsonDecode(jsonString) is Map<String, dynamic>);
       final rawMediaItems = jsonDecode(jsonString).cast<Map<String, dynamic>>();
       return rawMediaItems
           .map<MediaItem>((item) => MediaItem.fromJson(item))
@@ -59,8 +62,12 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future configureAudio() {
-    return methodChannel.invokeMethod("configureAudio");
+  Future configureShazamKitSession({String? developerToken}) {
+    return methodChannel.invokeMethod(
+        "configureShazamKitSession",
+        developerToken != null && Platform.isAndroid
+            ? {"developerToken": developerToken}
+            : {});
   }
 
   @override

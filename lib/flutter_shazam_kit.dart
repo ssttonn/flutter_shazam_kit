@@ -13,8 +13,9 @@ class FlutterShazamKit {
     return FlutterShazamKitPlatform.instance.isShazamKitAvailable();
   }
 
-  Future configureAudio() {
-    return FlutterShazamKitPlatform.instance.configureAudio();
+  Future configureShazamKitSession({String? developerToken}) {
+    return FlutterShazamKitPlatform.instance
+        .configureShazamKitSession(developerToken: developerToken);
   }
 
   Future startDetectingByMicrophone(
