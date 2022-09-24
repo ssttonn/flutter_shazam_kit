@@ -1,6 +1,6 @@
 # Flutter Shazam Kit
 
-![shazamkit_logo.png](https://ibb.co/W6x3zvh)
+![shazamkit_logo.png](images/shazamkit_logo.png)
 
 A plugin that helps you detect songs through your device's microphone
 
@@ -20,7 +20,7 @@ Note: This plugin depends on Apple's ShazamKit, requires IOS 15 or higher, and r
 
 Your android project’s structure should look like this:
 
-![Untitled](Flutter%20Shazam%20Kit%20e81251fe359048b281336714e94e0cfa/Untitled.png)
+![Untitled](images/android-project-structure.png)
 
 1. Inside your app-level `build.gradle`, change `minSdkVersion` to 23 and sync your project again.
 
