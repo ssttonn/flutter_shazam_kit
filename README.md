@@ -1,6 +1,6 @@
 # Flutter Shazam Kit
 
-![shazamkit_logo.png](Flutter%20Shazam%20Kit%20e81251fe359048b281336714e94e0cfa/shazamkit_logo.png)
+![shazamkit_logo.png](https://ibb.co/W6x3zvh)
 
 A plugin that helps you detect songs through your device's microphone
 
