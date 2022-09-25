@@ -57,7 +57,7 @@ minSdkVersion 23
     
     - Select the Media ID you created earlier and click Save.
     
-    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/media-id.png)
+    ![Untitled](images/media-id.png)
     
     - Click Continue and then click Register.
     - Download the private key (`.p8` file) and remember your Key ID.
