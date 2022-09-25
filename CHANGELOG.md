@@ -1,7 +1,11 @@
-## 1.0.0
+## 1.0.2
 
-* Add detect music by microphone function for IOS and Android.
+* Update documentation.
 
 ## 1.0.1
 
 * Remove unsued models. 
+
+## 1.0.0
+
+* Add detect music by microphone function for IOS and Android.

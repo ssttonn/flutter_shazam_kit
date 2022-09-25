@@ -41,7 +41,9 @@ class _MyAppState extends State<MyApp> {
           _state = state;
         });
       });
-      _flutterShazamKitPlugin.onError((error) {});
+      _flutterShazamKitPlugin.onError((error) {
+        print(error.message);
+      });
     });
   }
 

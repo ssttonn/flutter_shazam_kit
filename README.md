@@ -1,7 +1,9 @@
 # Flutter Shazam Kit
 
+
+
 <p align="center">
-<img src="images/shazamkit_logo.png" width="600"/>
+<img src="https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/shazamkit_logo.png?raw=true" width="600"/>
 </p>
 
 A plugin that helps you detect songs through your device's microphone
@@ -11,7 +13,7 @@ Note:
 - This plugin depends on Apple's [ShazamKit](https://developer.apple.com/shazamkit/), requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
 - In the early versions of this plugin, I only used `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
 <p align="center">
-<img src="images/sample-flow.gif" width="300"/>
+<img src="https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/sample-flow.gif?raw=true" width="300"/>
 </p>
 
 ## Configuration
@@ -30,7 +32,7 @@ Note:
 
 Your android project’s structure should look like this:
 
-![Untitled](images/android-project-structure.png)
+![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/android-project-structure.png?raw=true)
 
 3. Inside your app-level `build.gradle`, change `minSdkVersion` to 23 and sync your project again.
 
@@ -48,7 +50,7 @@ minSdkVersion 23
     - On the top left, click the add button (+), select **Media IDs**, then click **Continue**.
     - Enter description and identifier for the Media ID, then enable ShazamKit and click Continue.
     
-    ![Untitled](images/music-services-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/music-services-android.png?raw=true)
     
     - Click Register and you should see new Media ID in identifier list.
     
@@ -58,16 +60,16 @@ minSdkVersion 23
     - On the top left, click the add button (+), then enter your key name.
     - Enable **Media Services (MusicKit, ShazamKit)** checkbox, the click Configure button on the right.
     
-    ![Untitled](images/media-id-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/media-id-android.png?raw=true)
     
     - Select the Media ID you created earlier and click Save.
     
-    ![Untitled](images/media-id.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/media-id.png?raw=true)
     
     - Click Continue and then click Register.
     - Download the private key (`.p8` file) and remember your Key ID.
     
-    ![Untitled](images/private-key-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/private-key-android.png?raw=true)
     
     3/ Generate a Developer Token
     
@@ -77,8 +79,7 @@ minSdkVersion 23
         
         Note: This code snippet use the famous [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) library so you need to install this library first before using this code snippet.
         
-    
-    ```
+    ```js
     "use strict";
     const fs = require("fs");
     const jwt = require("jsonwebtoken");
@@ -126,6 +127,7 @@ platform :ios, '15.0'
     - You should see your new App ID in Identifier list.
 
 ## How to use
+### Initialize
 
 Initialization configuration
 
@@ -136,15 +138,7 @@ final _flutterShazamKitPlugin = FlutterShazamKit();
   void initState() {
     super.initState();
     _flutterShazamKitPlugin
-        .configureShazamKitSession(developerToken: developerToken)
-        .then((value) {
-			//callback for match results
-      _flutterShazamKitPlugin.onMatchResultDiscovered((result) {});
-			//callback for detecting state
-      _flutterShazamKitPlugin.onDetectStateChanged((state) {});
-			//callback for error
-      _flutterShazamKitPlugin.onError((error) {});
-    });
+        .configureShazamKitSession(developerToken: developerToken);
   }
 
 @override
@@ -154,7 +148,37 @@ final _flutterShazamKitPlugin = FlutterShazamKit();
   }
 ```
 
- Starting to detect by microphone
+Listen for the matching event
+
+```dart
+_flutterShazamKitPlugin.onMatchResultDiscovered((result) {
+        if (result is Matched) {
+          print(result.mediaItems)
+        } else if (result is NoMatch) {
+          // do something in no match case
+        }
+});
+```
+
+Listen for detecting state changed
+
+```dart
+_flutterShazamKitPlugin.onDetectStateChanged((state) {
+        print(state)
+});
+```
+
+Listen for errors
+
+```dart
+_flutterShazamKitPlugin.onError((error) {
+        print(error.message);
+});
+```
+
+### Detect by microphone
+
+Starting to detect by microphone
 
 ```dart
 _flutterShazamKitPlugin.startDetectingByMicrophone();
@@ -166,5 +190,4 @@ End detect
 _flutterShazamKitPlugin.endDetecting();
 ```
 
-See the `main.dart` in the `example` for a complete example.
-
+See the `main.dart` in the `example` folder for a complete example.
