@@ -9,6 +9,8 @@ Note:
 - This plugin depends on Apple's [ShazamKit](https://developer.apple.com/shazamkit/), requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
 - In the early versions of this plugin, I only used `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
 
+![sample-flow.gif](images/sample-flow.gif)
+
 ## Configuration
 
 ### Android configuration
