@@ -4,16 +4,21 @@
 
 A plugin that helps you detect songs through your device's microphone
 
-Note: This plugin depends on Apple's ShazamKit, requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
+Note: 
+
+- This plugin depends on Apple's [ShazamKit](https://developer.apple.com/shazamkit/), requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
+- In the early versions of this plugin, I only used `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
 
 ## Configuration
 
 ### Android configuration
 
-1. Add [android.permission.RECORD_AUDIO](https://developer.android.com/reference/android/Manifest.permission#RECORD_AUDIO) permission to your `AndroidManifest.xml`.
+1. Add [android.permission.RECORD_AUDIO](https://developer.android.com/reference/android/Manifest.permission#RECORD_AUDIO) permission and [android.permission.INTERNET](https://developer.android.com/reference/android/Manifest.permission#INTERNET) permission  to your `AndroidManifest.xml`.
 
 ```xml
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+<uses-permission android:name="android.permission.INTERNET"/>
 ```
 
 2. Go to this [Download Page](https://developer.apple.com/download/all/?q=Android%20ShazamKit) and download the latest version of ShazamKit for Android, once you have downloaded it, create a new folder called `libs` inside your android’s `app` folder and place the `.aar` file inside that `libs` folder.
