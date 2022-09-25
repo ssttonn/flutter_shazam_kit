@@ -1,6 +1,8 @@
 # Flutter Shazam Kit
 
-![shazamkit_logo.png](images/shazamkit_logo.png)
+<p align="center">
+<img src="images/shazamkit_logo.png" width="600"/>
+</p>
 
 A plugin that helps you detect songs through your device's microphone
 
@@ -8,8 +10,9 @@ Note:
 
 - This plugin depends on Apple's [ShazamKit](https://developer.apple.com/shazamkit/), requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
 - In the early versions of this plugin, I only used `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
-
-![sample-flow.gif](images/sample-flow.gif)
+<p align="center">
+<img src="images/sample-flow.gif" width="300"/>
+</p>
 
 ## Configuration
 
