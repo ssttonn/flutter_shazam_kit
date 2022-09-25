@@ -1,6 +1,8 @@
 # Flutter Shazam Kit
-
-
+[![Version](https://img.shields.io/pub/v/flutter_shazam_kit?color=%23212121&label=Version&style=for-the-badge)](https://pub.dev/packages/flutter_shazam_kit)
+[![Publisher](https://img.shields.io/pub/publisher/flutter_shazam_kit?color=E94560&style=for-the-badge)](https://pub.dev/publishers/sstonn.xyz)
+[![Points](https://img.shields.io/pub/points/flutter_shazam_kit?color=FF9F29&style=for-the-badge)](https://pub.dev/packages/flutter_shazam_kit)
+[![LINCENSE](https://img.shields.io/github/license/ssttonn/flutter_shazam_kit?color=0F3460&style=for-the-badge)](https://github.com/ssttonn/flutter_shazam_kit/blob/master/LICENSE)
 
 <p align="center">
 <img src="https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/shazamkit_logo.png?raw=true" width="600"/>
@@ -11,7 +13,7 @@ A plugin that helps you detect songs through your device's microphone
 Note: 
 
 - This plugin depends on Apple's [ShazamKit](https://developer.apple.com/shazamkit/), requires IOS 15 or higher, and requires Android API level 23 (Android 6.0) or higher.
-- In the early versions of this plugin, I only used `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
+- In the early versions of this plugin, I only use `ShazamCatalog`, it was the default catalog used as library for music detection and I plan to implement `CustomCatalog` in the future.
 <p align="center">
 <img src="https://github.com/ssttonn/flutter_shazam_kit/blob/master/images/sample-flow.gif?raw=true" width="300"/>
 </p>
@@ -74,7 +76,7 @@ minSdkVersion 23
     3/ Generate a Developer Token
     
     - Please refer to this [link](https://developer.apple.com/documentation/applemusicapi/generating_developer_tokens) to learn how to generate a developer token.
-    - Due to apple policy, Developer Token can only be valid for up to 3 months. So you should have a remote place to store and refresh your Developer Token once it is generated, you can either use a Backend Server or an alternative solution like [Firebase Remote Config](https://firebase.google.com/products/remote-config?gclid=Cj0KCQjw1bqZBhDXARIsANTjCPLa35qab-Sc8xEPfTHU2wZ3g46jJqkwgvtHrEy_11v4N280KrTyfxgaAhwCEALw_wcB&gclsrc=aw.ds) or something similar to store, generate and refresh your Developer Token.
+    - Due to apple policy, Developer Token can only be valid for up to 6 months. So you should have a remote place to store and refresh your Developer Token once it is generated, you can either use a Backend Server or an alternative solution like [Firebase Remote Config](https://firebase.google.com/products/remote-config?gclid=Cj0KCQjw1bqZBhDXARIsANTjCPLa35qab-Sc8xEPfTHU2wZ3g46jJqkwgvtHrEy_11v4N280KrTyfxgaAhwCEALw_wcB&gclsrc=aw.ds) or something similar to store, generate and refresh your Developer Token.
     - For testing purposes you can use the following Node JS snippet or you can use [my repository](https://github.com/ssttonn/nodewebtoken) to create it.
         
         Note: This code snippet use the famous [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) library so you need to install this library first before using this code snippet.
