@@ -16,13 +16,13 @@ Note: This plugin depends on Apple's ShazamKit, requires IOS 15 or higher, and r
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 
-1. Go to this [Download Page](https://developer.apple.com/download/all/?q=Android%20ShazamKit) and download the latest version of ShazamKit for Android, once you have downloaded it, create a new folder called `libs` inside your android’s `app` folder and place the `.aar` file inside that `libs` folder.
+2. Go to this [Download Page](https://developer.apple.com/download/all/?q=Android%20ShazamKit) and download the latest version of ShazamKit for Android, once you have downloaded it, create a new folder called `libs` inside your android’s `app` folder and place the `.aar` file inside that `libs` folder.
 
 Your android project’s structure should look like this:
 
 ![Untitled](images/android-project-structure.png)
 
-1. Inside your app-level `build.gradle`, change `minSdkVersion` to 23 and sync your project again.
+3. Inside your app-level `build.gradle`, change `minSdkVersion` to 23 and sync your project again.
 
 ```groovy
 minSdkVersion 23
