@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shazam_kit/flutter_shazam_kit.dart';
-import 'package:flutter_shazam_kit/models/result.dart';
 
 void main() {
   runApp(const MyApp());

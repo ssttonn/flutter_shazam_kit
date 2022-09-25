@@ -5,6 +5,7 @@ import 'flutter_shazam_kit_platform_interface.dart';
 export './models/detecting_state.dart';
 export './models/error.dart';
 export './models/media_item.dart';
+export '/models/result.dart';
 
 class FlutterShazamKit {
   void onMatchResultDiscovered(
