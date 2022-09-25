@@ -17,7 +17,7 @@ import java.lang.Exception
 //TODO: Add more comments
 class ShazamManager(private val callbackChannel: MethodChannel) {
     private lateinit var catalog: Catalog
-    private lateinit var currentSession: StreamingSession
+    private var currentSession: StreamingSession? = null
     private var audioRecord: AudioRecord? = null
     private var recordingThread: Thread? = null
     private var isRecording = false
@@ -52,24 +52,25 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
                    }
                }
                flutterResult.success(null)
-               currentSession.recognitionResults().collect { result: MatchResult ->
-                   try{
-                       when (result) {
-                           is MatchResult.Match -> callbackChannel.invokeMethod(
-                               "matchFound",
-                               result.toJsonString()
-                           )
-                           is MatchResult.NoMatch -> callbackChannel.invokeMethod("notFound", null)
-                           is MatchResult.Error -> callbackChannel.invokeMethod(
-                               "didHasError",
-                               result.exception.message
-                           )
+               currentSession?.let {
+                   currentSession?.recognitionResults()?.collect { result: MatchResult ->
+                       try{
+                           when (result) {
+                               is MatchResult.Match -> callbackChannel.invokeMethod(
+                                   "matchFound",
+                                   result.toJsonString()
+                               )
+                               is MatchResult.NoMatch -> callbackChannel.invokeMethod("notFound", null)
+                               is MatchResult.Error -> callbackChannel.invokeMethod(
+                                   "didHasError",
+                                   result.exception.message
+                               )
+                           }
+                       }catch (e: Exception){
+                           e.message?.let { onError(it) }
                        }
-                   }catch (e: Exception){
-                       e.message?.let { onError(it) }
                    }
                }
-
            }
        }catch (e: Exception){
            e.message?.let { onError(it) }
@@ -79,6 +80,10 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     fun startListening() {
         try {
+            if (currentSession == null){
+                callbackChannel.invokeMethod("didHasError", "ShazamSession not found, please call configureShazamKitSession() first to initialize it.")
+                return
+            }
             callbackChannel.invokeMethod("detectStateChanged", 1)
             val audioSource = MediaRecorder.AudioSource.DEFAULT
             val audioFormat = AudioFormat.Builder().setChannelMask(AudioFormat.CHANNEL_IN_MONO)
@@ -98,7 +103,7 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
                 val readBuffer = ByteArray(bufferSize)
                 while (isRecording) {
                     val actualRead = audioRecord!!.read(readBuffer, 0, bufferSize)
-                    currentSession.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
                 }
             }, "AudioRecorder Thread")
             recordingThread!!.start()

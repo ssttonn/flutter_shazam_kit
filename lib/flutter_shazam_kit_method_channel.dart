@@ -67,6 +67,14 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
+  Future endSession() {
+    onMatchResultDiscoveredCallback = null;
+    onDetectStateChangedCallback = null;
+    onErrorCallback = null;
+    return methodChannel.invokeMethod("endSession");
+  }
+
+  @override
   void onMatchResultDiscovered(
       OnMatchResultDiscovered onMatchResultDiscovered) {
     onMatchResultDiscoveredCallback = onMatchResultDiscovered;
@@ -83,14 +91,14 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future startDetectingByMicrophone() {
+  Future startDetectionWithMicrophone() {
     return methodChannel.invokeMethod(
-      "startDetectingByMicrophone",
+      "startDetectionWithMicrophone",
     );
   }
 
   @override
-  Future endDetecting() {
-    return methodChannel.invokeMethod("stopDetecting");
+  Future endDetectionWithMicrophone() {
+    return methodChannel.invokeMethod("endDetectionWithMicrophone");
   }
 }

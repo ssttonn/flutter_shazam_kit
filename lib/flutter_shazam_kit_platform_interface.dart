@@ -41,12 +41,17 @@ abstract class FlutterShazamKitPlatform extends PlatformInterface {
         'configureShazamKitSession() has not been implemented.');
   }
 
-  Future startDetectingByMicrophone() {
-    throw UnimplementedError(
-        'startDetectingByMicrophone() has not been implemented.');
+  Future endSession() {
+    throw UnimplementedError('endSession() has not been implemented.');
   }
 
-  Future endDetecting() {
-    throw UnimplementedError('endDetecting() has not been implemented.');
+  Future startDetectionWithMicrophone() {
+    throw UnimplementedError(
+        'startDetectionWithMicrophone() has not been implemented.');
+  }
+
+  Future endDetectionWithMicrophone() {
+    throw UnimplementedError(
+        'endDetectionWithMicrophone() has not been implemented.');
   }
 }

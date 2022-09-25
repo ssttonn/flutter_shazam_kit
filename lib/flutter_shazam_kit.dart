@@ -27,11 +27,15 @@ class FlutterShazamKit {
         .configureShazamKitSession(developerToken: developerToken);
   }
 
-  Future startDetectingByMicrophone() {
-    return FlutterShazamKitPlatform.instance.startDetectingByMicrophone();
+  Future startDetectionWithMicrophone() {
+    return FlutterShazamKitPlatform.instance.startDetectionWithMicrophone();
   }
 
-  Future endDetecting() {
-    return FlutterShazamKitPlatform.instance.endDetecting();
+  Future endDetectionWithMicrophone() {
+    return FlutterShazamKitPlatform.instance.endDetectionWithMicrophone();
+  }
+
+  Future endSession() {
+    return FlutterShazamKitPlatform.instance.endSession();
   }
 }

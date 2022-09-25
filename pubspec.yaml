@@ -1,7 +1,7 @@
 name: flutter_shazam_kit
 description: A new Flutter plugin project.
-version: 0.0.1
-homepage:
+version: 1.0.0
+homepage: https://github.com/ssttonn/flutter_shazam_kit
 
 environment:
   sdk: ">=2.17.6 <3.0.0"

@@ -7,8 +7,7 @@ void main() {
   runApp(const MyApp());
 }
 
-const developerToken =
-    "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjNGVjc1SFBRQ0sifQ.eyJpYXQiOjE2NjQwMDgwNTcsImV4cCI6MTY3OTU2MDA1NywiaXNzIjoiN1ZINlUyMlNWQiJ9.45BQ52oKZ9e9-AKf1sXvpimvOuHS7faoegpCz9Cw2KAkNzG2TxLDprVjn45suTHCFIlgqwH9mz3wf7IrOy1t7w";
+const developerToken = "<YOUR_DEVELOPER_TOKEN>"; //use for android only
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -36,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         } else if (result is NoMatch) {
           // do something in no match case
         }
-        _flutterShazamKitPlugin.endDetecting();
+        _flutterShazamKitPlugin.endDetectionWithMicrophone();
       });
       _flutterShazamKitPlugin.onDetectStateChanged((state) {
         setState(() {
@@ -45,6 +44,12 @@ class _MyAppState extends State<MyApp> {
       });
       _flutterShazamKitPlugin.onError((error) {});
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _flutterShazamKitPlugin.endSession();
   }
 
   @override
@@ -152,11 +157,11 @@ class _MyAppState extends State<MyApp> {
         }));
   }
 
-  startDetect() async {
-    _flutterShazamKitPlugin.startDetectingByMicrophone();
+  startDetect() {
+    _flutterShazamKitPlugin.startDetectionWithMicrophone();
   }
 
   endDetect() {
-    _flutterShazamKitPlugin.endDetecting();
+    _flutterShazamKitPlugin.endDetectionWithMicrophone();
   }
 }

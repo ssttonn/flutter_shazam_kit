@@ -49,7 +49,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                 call.argument("developerToken"),
                 result
             )
-            "startDetectingByMicrophone" -> {
+            "startDetectionWithMicrophone" -> {
                 if (activityBinding?.activity?.applicationContext?.let {
                         ActivityCompat.checkSelfPermission(
                             it,
@@ -64,9 +64,12 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                 shazamManager.startListening()
                 result.success(null)
             }
-            "stopDetecting" -> {
+            "endDetectionWithMicrophone" -> {
                 shazamManager.stopListening()
                 result.success(null)
+            }
+            "endSession"->{
+
             }
             else -> result.notImplemented()
         }

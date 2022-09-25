@@ -2,7 +2,6 @@ import Flutter
 import UIKit
 import ShazamKit
 
-@available(iOS 15.0, *)
 public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
     private var session: SHSession?
     private let audioEngine = AVAudioEngine()
@@ -24,15 +23,18 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
         case "configureShazamKitSession":
             configureShazamKitSession()
             result(nil)
-        case "startDetectingByMicrophone":
+        case "startDetectionWithMicrophone":
             do{
                 configureAudio()
                 try startListening(result: result)
             }catch{
                 callbackChannel?.invokeMethod("didHasError", arguments: error.localizedDescription)
             }
-        case "stopDetecting":
+        case "endDetectionWithMicrophone":
             stopListening()
+            result(nil)
+        case "endSession":
+            session = nil
             result(nil)
         default:
             result(nil)
@@ -42,7 +44,6 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
 
 //MARK: ShazamKit session delegation here
 //MARK: Methods for AVAudio
-@available(iOS 15.0, *)
 extension SwiftFlutterShazamKitPlugin{
     func configureShazamKitSession(){
         if session == nil{
@@ -79,6 +80,11 @@ extension SwiftFlutterShazamKitPlugin{
     }
     
     func startListening(result: FlutterResult) throws {
+        guard session != nil else{
+            callbackChannel?.invokeMethod("didHasError", arguments: "ShazamSession not found, please call configureShazamKitSession() first to initialize it.")
+            result(nil)
+            return
+        }
         callbackChannel?.invokeMethod("detectStateChanged", arguments: 1)
         // Throw an error if the audio engine is already running.
         guard !audioEngine.isRunning else {
@@ -112,7 +118,6 @@ extension SwiftFlutterShazamKitPlugin{
 }
 
 //MARK: Delegate methods for SHSession
-@available(iOS 15.0, *)
 extension SwiftFlutterShazamKitPlugin: SHSessionDelegate{
     public func session(_ session: SHSession, didFind match: SHMatch) {
         var mediaItems: [[String: Any]] = []
