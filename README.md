@@ -1,6 +1,6 @@
 # Flutter Shazam Kit
 
-![shazamkit_logo.png](images/shazamkit_logo.png)
+![shazamkit_logo.png](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/shazamkit_logo.png)
 
 A plugin that helps you detect songs through your device's microphone
 
@@ -25,7 +25,7 @@ Note:
 
 Your android project’s structure should look like this:
 
-![Untitled](images/android-project-structure.png)
+![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/android-project-structure.png)
 
 3. Inside your app-level `build.gradle`, change `minSdkVersion` to 23 and sync your project again.
 
@@ -43,7 +43,7 @@ minSdkVersion 23
     - On the top left, click the add button (+), select **Media IDs**, then click **Continue**.
     - Enter description and identifier for the Media ID, then enable ShazamKit and click Continue.
     
-    ![Untitled](images/music-services-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/music-services-android.png)
     
     - Click Register and you should see new Media ID in identifier list.
     
@@ -53,16 +53,16 @@ minSdkVersion 23
     - On the top left, click the add button (+), then enter your key name.
     - Enable **Media Services (MusicKit, ShazamKit)** checkbox, the click Configure button on the right.
     
-    ![Untitled](images/media-id-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/media-id-android.png)
     
     - Select the Media ID you created earlier and click Save.
     
-    ![Untitled](images/media-id.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/media-id.png)
     
     - Click Continue and then click Register.
     - Download the private key (`.p8` file) and remember your Key ID.
     
-    ![Untitled](images/private-key-android.png)
+    ![Untitled](https://github.com/ssttonn/flutter_shazam_kit/blob/main/images/private-key-android.png)
     
     3/ Generate a Developer Token
     
