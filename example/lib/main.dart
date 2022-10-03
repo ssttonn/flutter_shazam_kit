@@ -1,12 +1,16 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shazam_kit/flutter_shazam_kit.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(home: const MyApp()));
 }
 
-const developerToken = "<YOUR_DEVELOPER_TOKEN>"; //use for android only
+const developerToken =
+    "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjNGVjc1SFBRQ0sifQ.eyJpYXQiOjE2NjQ2ODgxNTYsImV4cCI6MTY4MDI0MDE1NiwiaXNzIjoiN1ZINlUyMlNWQiJ9._XCTaksMmYKi7vtxp7LaBgwYW4TnmBJlN1bk9pgPBkWd1xnMNmqQorruHeUtZWVrOXsWIpStiFGqAZZrIsulTg"; //use for android only
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -55,13 +59,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Plugin example app'),
-          ),
-          body: _body()),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: _body());
   }
 
   Widget _body() {
@@ -97,11 +99,47 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         onPressed: () async {
-          if (_state == DetectState.detecting) {
+          if (this._state != DetectState.none) {
             endDetect();
-          } else {
-            startDetect();
+            return;
           }
+          showCupertinoModalPopup<void>(
+            context: context,
+            builder: (BuildContext context) => CupertinoActionSheet(
+              title: Text(
+                'Detect from',
+                style: theme.textTheme.subtitle1,
+              ),
+              actions: <CupertinoActionSheetAction>[
+                CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    startDetect();
+                  },
+                  child: const Text('Microphone'),
+                ),
+                CupertinoActionSheetAction(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
+
+                    if (result != null) {
+                      File file = File(result.files.single.path ?? "");
+                      _flutterShazamKitPlugin
+                          .startDetectionWithAudioFile(file)
+                          .then((value) {
+                        print("Finished");
+                      });
+                    } else {
+                      // User canceled the picker
+                    }
+                  },
+                  child: const Text('Audio file'),
+                ),
+              ],
+            ),
+          );
         });
   }
 

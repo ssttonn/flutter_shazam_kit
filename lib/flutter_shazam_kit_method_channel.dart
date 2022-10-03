@@ -96,6 +96,13 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
+  Future startDetectionWithAudioFile(File file) {
+    //TODO change argument name on IOS
+    return methodChannel
+        .invokeMethod("startDetectionWithAudioFile", {"path": file.path});
+  }
+
+  @override
   Future endDetectionWithMicrophone() {
     return methodChannel.invokeMethod("endDetectionWithMicrophone");
   }

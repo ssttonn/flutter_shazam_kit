@@ -33,6 +33,28 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
         case "endDetectionWithMicrophone":
             stopListening()
             result(nil)
+        case "startDetectionWithAudioFile":
+            //            do{
+            
+            //                if let arguments = call.arguments as? [String: Any], let bytes = arguments["bytes"] as? FlutterStandardTypedData{
+            //                    let data = Data(bytes.data)
+            //                    let nsData = NSData(data: data)
+            //
+            //                    let generator = SHSignatureGenerator()
+            //                    if let byteBuffer = nsData.toPCMBuffer(audioFormat: outputFormat){
+            //                        try generator.append(byteBuffer, at: nil)
+            //                        let signature = generator.signature()
+            //                        session?.match(signature)
+            //                    }
+            //                }
+            //
+            //            }catch{
+            //                print(error.localizedDescription)
+            //            }
+            if let arguments = call.arguments as? [String: Any], let path = arguments["bytes"] as? String{
+                detectWithAudioFile(path: path)
+            }
+            result(nil)
         case "endSession":
             session = nil
             result(nil)
@@ -115,7 +137,70 @@ extension SwiftFlutterShazamKitPlugin{
         mixerNode.removeTap(onBus: 0)
         audioEngine.stop()
     }
+    
+    private func detectWithAudioFile(path: String){
+        callbackChannel?.invokeMethod("detectStateChanged", arguments: 1)
+        let url = URL(fileURLWithPath: path)
+        audioEngine.attach(mixerNode)
+        
+        guard let audioFormat = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1) else {
+            return
+        }
+        
+        let generator = SHSignatureGenerator()
+        
+        do {
+            
+            let audioFile = try AVAudioFile(forReading: url)
+            
+            guard let inputBuffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: 44100 * 10),
+                  let outputBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: 44100 * 10) else {
+                return
+            }
+            // Read file into buffer
+            let inputBlock : AVAudioConverterInputBlock = { inNumPackets, outStatus in
+                do {
+                    try audioFile.read(into: inputBuffer)
+                    outStatus.pointee = .haveData
+                    return inputBuffer
+                } catch {
+                    if audioFile.framePosition >= audioFile.length {
+                        outStatus.pointee = .endOfStream
+                        return nil
+                    } else {
+                        outStatus.pointee = .noDataNow
+                        return nil
+                    }
+                }
+            }
+            
+            guard let converter = AVAudioConverter(from: audioFile.processingFormat, to: audioFormat) else {
+                return
+            }
+            
+            let status = converter.convert(to: outputBuffer, error: nil, withInputFrom: inputBlock)
+            if status == .error || status == .endOfStream {
+                return
+            }
+            
+            try generator.append(outputBuffer, at: nil)
+            
+            if status == .inputRanDry {
+                return
+            }
+        } catch {
+            print(error)
+        }
+        
+        // create signature
+        let signature = generator.signature()
+        // try to match
+        session?.match(signature)
+    }
 }
+
+
+
 
 //MARK: Delegate methods for SHSession
 extension SwiftFlutterShazamKitPlugin: SHSessionDelegate{
@@ -160,3 +245,16 @@ extension SwiftFlutterShazamKitPlugin: SHSessionDelegate{
     }
 }
 
+extension NSData{
+    func toPCMBuffer(audioFormat: AVAudioFormat) -> AVAudioPCMBuffer? {
+        let data = self // given NSData audio format
+        
+        guard let PCMBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: UInt32(data.length) / audioFormat.streamDescription.pointee.mBytesPerFrame) else {
+            return nil
+        }
+        PCMBuffer.frameLength = PCMBuffer.frameCapacity
+        let channels = UnsafeBufferPointer(start: PCMBuffer.floatChannelData, count: Int(PCMBuffer.format.channelCount))
+        data.getBytes(UnsafeMutableRawPointer(channels[0]) , length: data.length)
+        return PCMBuffer
+    }
+}

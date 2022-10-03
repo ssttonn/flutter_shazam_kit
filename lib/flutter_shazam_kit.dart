@@ -1,5 +1,7 @@
 library flutter_shazam_kit;
 
+import 'dart:io';
+
 import 'flutter_shazam_kit_platform_interface.dart';
 
 export './models/detecting_state.dart';
@@ -30,6 +32,10 @@ class FlutterShazamKit {
 
   Future startDetectionWithMicrophone() {
     return FlutterShazamKitPlatform.instance.startDetectionWithMicrophone();
+  }
+
+  Future startDetectionWithAudioFile(File file) {
+    return FlutterShazamKitPlatform.instance.startDetectionWithAudioFile(file);
   }
 
   Future endDetectionWithMicrophone() {

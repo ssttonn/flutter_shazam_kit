@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_shazam_kit/models/detecting_state.dart';
 import 'package:flutter_shazam_kit/models/error.dart';
 import 'package:flutter_shazam_kit/models/result.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_shazam_kit_method_channel.dart';
 
@@ -9,12 +10,7 @@ typedef OnMatchResultDiscovered = Function(MatchResult);
 typedef OnError = Function(MainError error);
 typedef OnDetectStateChanged = Function(DetectState state);
 
-abstract class FlutterShazamKitPlatform extends PlatformInterface {
-  /// Constructs a FlutterShazamKitPlatform.
-  FlutterShazamKitPlatform() : super(token: _token);
-
-  static final Object _token = Object();
-
+abstract class FlutterShazamKitPlatform {
   static FlutterShazamKitPlatform instance = MethodChannelFlutterShazamKit();
 
   OnMatchResultDiscovered? onMatchResultDiscoveredCallback;
@@ -48,6 +44,11 @@ abstract class FlutterShazamKitPlatform extends PlatformInterface {
   Future startDetectionWithMicrophone() {
     throw UnimplementedError(
         'startDetectionWithMicrophone() has not been implemented.');
+  }
+
+  Future startDetectionWithAudioFile(File file) {
+    throw UnimplementedError(
+        'startDetectionWithAudioFile() has not been implemented.');
   }
 
   Future endDetectionWithMicrophone() {

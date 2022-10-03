@@ -20,10 +20,6 @@ import java.lang.Exception
 class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
     ActivityAware
 {
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var shazamManager: ShazamManager
     private lateinit var context: Context
@@ -68,8 +64,14 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                 shazamManager.stopListening()
                 result.success(null)
             }
+            "startDetectionWithAudioFile" ->{
+                call.argument<String>("path")?.let {
+                    shazamManager.startDetectingByAudioFile(it)
+                }
+                result.success(null)
+            }
             "endSession"->{
-
+                shazamManager.endSession()
             }
             else -> result.notImplemented()
         }
