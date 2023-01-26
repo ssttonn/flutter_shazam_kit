@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shazam_kit/flutter_shazam_kit.dart';
@@ -17,33 +19,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _flutterShazamKitPlugin = FlutterShazamKit();
-  DetectState _state = DetectState.none;
   final List<MediaItem> _mediaItems = [];
+  StreamSubscription? _errorSubscription;
 
   @override
   void initState() {
     super.initState();
-    _flutterShazamKitPlugin
-        .configureShazamKitSession(developerToken: developerToken)
-        .then((_) {
-      _flutterShazamKitPlugin.onMatchResultDiscovered((result) {
-        if (result is Matched) {
-          setState(() {
-            _mediaItems.insertAll(0, result.mediaItems);
-          });
-        } else if (result is NoMatch) {
-          // do something in no match case
-        }
-        _flutterShazamKitPlugin.endDetectionWithMicrophone();
-      });
-      _flutterShazamKitPlugin.onDetectStateChanged((state) {
-        setState(() {
-          _state = state;
-        });
-      });
-      _flutterShazamKitPlugin.onError((error) {
-        print(error.message);
-      });
+    _flutterShazamKitPlugin.configureShazamKitSession(
+        developerToken: developerToken);
+    _errorSubscription = _flutterShazamKitPlugin.errorStream.listen((error) {
+      print(error.message);
     });
   }
 
@@ -51,6 +36,7 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
     _flutterShazamKitPlugin.endSession();
+    _errorSubscription?.cancel();
   }
 
   @override
@@ -67,11 +53,37 @@ class _MyAppState extends State<MyApp> {
   Widget _body() {
     final theme = Theme.of(context);
     return Column(
-      children: [_detectButton(theme), Expanded(child: _detectedItems(theme))],
+      children: [
+        StreamBuilder<DetectState>(
+          stream: _flutterShazamKitPlugin.detectStateChangedStream,
+          builder: (context, snapshot) {
+            final state = snapshot.data ?? DetectState.none;
+            return _detectButton(state, theme);
+          }
+        ),
+        Expanded(
+          child: StreamBuilder<MatchResult>(
+            stream: _flutterShazamKitPlugin.matchResultDiscoveredStream,
+            builder: (context, snapshot) {
+              final result = snapshot.data;
+              if (result is Matched) {
+                _mediaItems.insertAll(0, result.mediaItems);
+              } else if (result is NoMatch) {
+                // do something in no match case
+              }
+              if (snapshot.hasData) {
+                _flutterShazamKitPlugin.endDetectionWithMicrophone();
+              }
+
+              return _detectedItems(_mediaItems, theme);
+            },
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _detectButton(ThemeData theme) {
+  Widget _detectButton(DetectState state, ThemeData theme) {
     return CupertinoButton(
         child: Container(
           padding: const EdgeInsets.all(14),
@@ -81,10 +93,10 @@ class _MyAppState extends State<MyApp> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_state == DetectState.none ? "Start Detect" : "End Detect",
+              Text(state == DetectState.none ? "Start Detect" : "End Detect",
                   style:
                       theme.textTheme.headline6?.copyWith(color: Colors.white)),
-              if (_state == DetectState.detecting) ...[
+              if (state == DetectState.detecting) ...[
                 const SizedBox(width: 10),
                 const SizedBox(
                   height: 10,
@@ -97,7 +109,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         onPressed: () async {
-          if (_state == DetectState.detecting) {
+          if (state == DetectState.detecting) {
             endDetect();
           } else {
             startDetect();
@@ -105,12 +117,12 @@ class _MyAppState extends State<MyApp> {
         });
   }
 
-  Widget _detectedItems(ThemeData theme) {
+  Widget _detectedItems(List<MediaItem> mediaItems, ThemeData theme) {
     return ListView.builder(
-        itemCount: _mediaItems.length,
+        itemCount: mediaItems.length,
         shrinkWrap: true,
         itemBuilder: ((context, index) {
-          MediaItem item = _mediaItems[index];
+          MediaItem item = mediaItems[index];
           return Container(
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(

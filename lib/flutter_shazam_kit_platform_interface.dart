@@ -1,13 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_shazam_kit/models/detecting_state.dart';
 import 'package:flutter_shazam_kit/models/error.dart';
 import 'package:flutter_shazam_kit/models/result.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_shazam_kit_method_channel.dart';
-
-typedef OnMatchResultDiscovered = Function(MatchResult);
-typedef OnError = Function(MainError error);
-typedef OnDetectStateChanged = Function(DetectState state);
 
 abstract class FlutterShazamKitPlatform extends PlatformInterface {
   /// Constructs a FlutterShazamKitPlatform.
@@ -17,24 +15,15 @@ abstract class FlutterShazamKitPlatform extends PlatformInterface {
 
   static FlutterShazamKitPlatform instance = MethodChannelFlutterShazamKit();
 
-  OnMatchResultDiscovered? onMatchResultDiscoveredCallback;
-  OnError? onErrorCallback;
-  OnDetectStateChanged? onDetectStateChangedCallback;
+  Stream<MatchResult> get matchResultDiscoveredStream =>
+      throw UnimplementedError(
+          'matchResultDiscoveredStream() has not been implemented.');
 
-  void onMatchResultDiscovered(
-      OnMatchResultDiscovered onMatchResultDiscovered) {
-    throw UnimplementedError(
-        'onMatchResultDiscovered() has not been implemented.');
-  }
+  Stream<MainError> get errorStream =>
+      throw UnimplementedError('errorStream() has not been implemented.');
 
-  void onError(OnError onError) {
-    throw UnimplementedError('onError() has not been implemented.');
-  }
-
-  void onDetectStateChanged(OnDetectStateChanged onDetectStateChanged) {
-    throw UnimplementedError(
-        'onDetectStateChanged() has not been implemented.');
-  }
+  Stream<DetectState> get detectStateChangedStream => throw UnimplementedError(
+      'detectStateChangedStream() has not been implemented.');
 
   Future<void> configureShazamKitSession({String? developerToken}) {
     throw UnimplementedError(

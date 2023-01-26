@@ -1,6 +1,9 @@
 library flutter_shazam_kit;
 
 import 'flutter_shazam_kit_platform_interface.dart';
+import 'models/detecting_state.dart';
+import 'models/error.dart';
+import 'models/result.dart';
 
 export './models/detecting_state.dart';
 export './models/error.dart';
@@ -8,20 +11,13 @@ export './models/media_item.dart';
 export '/models/result.dart';
 
 class FlutterShazamKit {
-  void onMatchResultDiscovered(
-      OnMatchResultDiscovered onMatchResultDiscovered) {
-    return FlutterShazamKitPlatform.instance
-        .onMatchResultDiscovered(onMatchResultDiscovered);
-  }
+  Stream<MatchResult> get matchResultDiscoveredStream =>
+      FlutterShazamKitPlatform.instance.matchResultDiscoveredStream;
 
-  void onDetectStateChanged(OnDetectStateChanged onDetectStateChanged) {
-    return FlutterShazamKitPlatform.instance
-        .onDetectStateChanged(onDetectStateChanged);
-  }
+  Stream<DetectState> get detectStateChangedStream =>
+      FlutterShazamKitPlatform.instance.detectStateChangedStream;
 
-  void onError(OnError onError) {
-    return FlutterShazamKitPlatform.instance.onError(onError);
-  }
+  Stream<MainError> get errorStream => FlutterShazamKitPlatform.instance.errorStream;
 
   Future<void> configureShazamKitSession({String? developerToken}) {
     return FlutterShazamKitPlatform.instance
