@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _flutterShazamKitPlugin
         .configureShazamKitSession(developerToken: developerToken)
-        .then((value) {
+        .then((_) {
       _flutterShazamKitPlugin.onMatchResultDiscovered((result) {
         if (result is Matched) {
           setState(() {
@@ -158,11 +158,11 @@ class _MyAppState extends State<MyApp> {
         }));
   }
 
-  startDetect() {
+  void startDetect() {
     _flutterShazamKitPlugin.startDetectionWithMicrophone();
   }
 
-  endDetect() {
+  void endDetect() {
     _flutterShazamKitPlugin.endDetectionWithMicrophone();
   }
 }

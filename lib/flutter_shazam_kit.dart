@@ -23,20 +23,20 @@ class FlutterShazamKit {
     return FlutterShazamKitPlatform.instance.onError(onError);
   }
 
-  Future configureShazamKitSession({String? developerToken}) {
+  Future<void> configureShazamKitSession({String? developerToken}) {
     return FlutterShazamKitPlatform.instance
         .configureShazamKitSession(developerToken: developerToken);
   }
 
-  Future startDetectionWithMicrophone() {
+  Future<void> startDetectionWithMicrophone() {
     return FlutterShazamKitPlatform.instance.startDetectionWithMicrophone();
   }
 
-  Future endDetectionWithMicrophone() {
+  Future<void> endDetectionWithMicrophone() {
     return FlutterShazamKitPlatform.instance.endDetectionWithMicrophone();
   }
 
-  Future endSession() {
+  Future<void> endSession() {
     return FlutterShazamKitPlatform.instance.endSession();
   }
 }
