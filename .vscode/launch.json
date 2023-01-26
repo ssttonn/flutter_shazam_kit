@@ -7,39 +7,82 @@
         {
             "name": "flutter_shazam_kit",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "flutter_shazam_kit/example/lib/main.dart"
         },
         {
             "name": "flutter_shazam_kit (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "flutter_shazam_kit/example/lib/main.dart"
         },
         {
             "name": "flutter_shazam_kit (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "flutter_shazam_kit/example/lib/main.dart"
         },
         {
-            "name": "example",
-            "cwd": "example",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "example (profile mode)",
-            "cwd": "example",
+            "name": "flutter_shazam_kit_android",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "program": "flutter_shazam_kit_android/example/lib/main.dart"
         },
         {
-            "name": "example (release mode)",
-            "cwd": "example",
+            "name": "flutter_shazam_kit_android (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "profile",
+            "program": "flutter_shazam_kit_android/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_android (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "flutter_shazam_kit_android/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_macos",
+            "request": "launch",
+            "type": "dart",
+            "program": "flutter_shazam_kit_macos/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_macos (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "flutter_shazam_kit_macos/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_macos (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "flutter_shazam_kit_macos/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_ios",
+            "request": "launch",
+            "type": "dart",
+            "program": "flutter_shazam_kit_ios/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_ios (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "flutter_shazam_kit_ios/example/lib/main.dart"
+        },
+        {
+            "name": "flutter_shazam_kit_ios (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "flutter_shazam_kit_ios/example/lib/main.dart"
         }
     ]
 }

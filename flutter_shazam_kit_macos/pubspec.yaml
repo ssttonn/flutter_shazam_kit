@@ -1,0 +1,27 @@
+name: flutter_shazam_kit_macos
+description: An implementation for the MacOS platform of the Flutter `flutter_shazam_kit` plugin.
+repository: https://github.com/ssttonn/flutter_shazam_kit/flutter_shazam_kit_ios
+version: 1.0.3+1
+issue_tracker: https://github.com/ssttonn/flutter_shazam_kit/issues
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_shazam_kit_platform_interface: 
+    path: ../flutter_shazam_kit_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    implements: flutter_shazam_kit
+    platforms:
+      macos:
+        pluginClass: FlutterShazamKitMacosPlugin
+        dartPluginClass: FlutterShazamKitMacos

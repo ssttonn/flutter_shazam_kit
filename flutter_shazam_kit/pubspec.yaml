@@ -1,0 +1,36 @@
+name: flutter_shazam_kit
+description: A plugin that helps you detect songs through your device's microphone.
+version: 1.0.3+1
+repository: https://github.com/ssttonn/flutter_shazam_kit/flutter_shazam_kit
+issue_tracker: https://github.com/ssttonn/flutter_shazam_kit/issues
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_shazam_kit_android: 
+    path: ../flutter_shazam_kit_android
+  flutter_shazam_kit_ios:
+    path: ../flutter_shazam_kit_ios
+  flutter_shazam_kit_macos:
+    path: ../flutter_shazam_kit_macos
+  flutter_shazam_kit_platform_interface:
+    path: ../flutter_shazam_kit_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: flutter_shazam_kit_android
+      ios:
+        default_package: flutter_shazam_kit_ios
+      macos:
+        default_package: flutter_shazam_kit_macos
+
