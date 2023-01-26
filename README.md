@@ -137,44 +137,44 @@ Initialization configuration
 final _flutterShazamKitPlugin = FlutterShazamKit();
 
 @override
-  void initState() {
-    super.initState();
-    _flutterShazamKitPlugin
-        .configureShazamKitSession(developerToken: developerToken);
-  }
+void initState() {
+  super.initState();
+  _flutterShazamKitPlugin
+      .configureShazamKitSession(developerToken: developerToken);
+}
 
 @override
-  void dispose() {
-    super.dispose();
-    _flutterShazamKitPlugin.endSession();
-  }
+void dispose() {
+  super.dispose();
+  _flutterShazamKitPlugin.endSession();
+}
 ```
 
 Listen for the matching event
 
 ```dart
-_flutterShazamKitPlugin.onMatchResultDiscovered((result) {
-        if (result is Matched) {
-          print(result.mediaItems)
-        } else if (result is NoMatch) {
-          // do something in no match case
-        }
+_flutterShazamKitPlugin.matchResultDiscoveredStream.listen((result) {
+  if (result is Matched) {
+    print(result.mediaItems);
+  } else if (result is NoMatch) {
+    // do something in no match case
+  }
 });
 ```
 
 Listen for detecting state changed
 
 ```dart
-_flutterShazamKitPlugin.onDetectStateChanged((state) {
-        print(state)
+_flutterShazamKitPlugin.detectStateChangedStream.listen((state) {
+  print(state);
 });
 ```
 
 Listen for errors
 
 ```dart
-_flutterShazamKitPlugin.onError((error) {
-        print(error.message);
+_flutterShazamKitPlugin.errorStream.listen((error) {
+  print(error.message);
 });
 ```
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -18,6 +19,12 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   final callbackMethodChannel =
       const MethodChannel("flutter_shazam_kit_callback");
 
+  StreamController<MatchResult> matchResultDiscoveredController =
+      StreamController.broadcast();
+  StreamController<MainError> errorController = StreamController.broadcast();
+  StreamController<DetectState> detectStateChangedController =
+      StreamController.broadcast();
+
   MethodChannelFlutterShazamKit() {
     callbackMethodChannel.setMethodCallHandler(_nativeMethodHandler);
   }
@@ -27,18 +34,18 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
       case "matchFound":
         List<MediaItem> items =
             _parseMediaItemsFromJsonString(call.arguments as String? ?? "");
-        onMatchResultDiscoveredCallback?.call(Matched(mediaItems: items));
+        matchResultDiscoveredController.add(Matched(mediaItems: items));
         break;
       case "notFound":
-        onMatchResultDiscoveredCallback?.call(NoMatch());
+        matchResultDiscoveredController.add(NoMatch());
         break;
       case "didHasError":
         String errorMessage = call.arguments;
-        onErrorCallback?.call(MainError(message: errorMessage));
+        errorController.add(MainError(message: errorMessage));
         break;
       case "detectStateChanged":
         int stateIndex = call.arguments as int? ?? 0;
-        onDetectStateChangedCallback?.call(DetectState.values[stateIndex]);
+        detectStateChangedController.add(DetectState.values[stateIndex]);
         break;
     }
   }
@@ -56,7 +63,7 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future configureShazamKitSession({String? developerToken}) {
+  Future<void> configureShazamKitSession({String? developerToken}) {
     return methodChannel.invokeMethod(
         "configureShazamKitSession",
         developerToken != null && Platform.isAndroid
@@ -65,38 +72,30 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   }
 
   @override
-  Future endSession() {
-    onMatchResultDiscoveredCallback = null;
-    onDetectStateChangedCallback = null;
-    onErrorCallback = null;
+  Future<void> endSession() {
     return methodChannel.invokeMethod("endSession");
   }
 
   @override
-  void onMatchResultDiscovered(
-      OnMatchResultDiscovered onMatchResultDiscovered) {
-    onMatchResultDiscoveredCallback = onMatchResultDiscovered;
-  }
+  Stream<MatchResult> get matchResultDiscoveredStream =>
+      matchResultDiscoveredController.stream;
 
   @override
-  void onDetectStateChanged(OnDetectStateChanged onDetectStateChanged) {
-    onDetectStateChangedCallback = onDetectStateChanged;
-  }
+  Stream<DetectState> get detectStateChangedStream =>
+      detectStateChangedController.stream;
 
   @override
-  void onError(OnError onError) {
-    onErrorCallback = onError;
-  }
+  Stream<MainError> get errorStream => errorController.stream;
 
   @override
-  Future startDetectionWithMicrophone() {
+  Future<void> startDetectionWithMicrophone() {
     return methodChannel.invokeMethod(
       "startDetectionWithMicrophone",
     );
   }
 
   @override
-  Future endDetectionWithMicrophone() {
+  Future<void> endDetectionWithMicrophone() {
     return methodChannel.invokeMethod("endDetectionWithMicrophone");
   }
 }
