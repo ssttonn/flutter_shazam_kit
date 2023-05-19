@@ -68,6 +68,7 @@ extension SwiftFlutterShazamKitPlugin{
     func prepareAudio() throws{
         let audioSession = AVAudioSession.sharedInstance()
         try audioSession.setCategory(.playAndRecord, options: .interruptSpokenAudioAndMixWithOthers)
+        try audioSession.overrideOutputAudioPort(AVAudioSession.PortOverride.none)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
     }
     
@@ -114,8 +115,8 @@ extension SwiftFlutterShazamKitPlugin{
     func stopListening() throws {
         let audioSession = AVAudioSession.sharedInstance()
         try audioSession.setActive(false)
-        audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
+        audioEngine.stop()
         callbackChannel?.invokeMethod("detectStateChanged", arguments: 0)
     }
     
