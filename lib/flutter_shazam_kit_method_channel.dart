@@ -99,4 +99,14 @@ class MethodChannelFlutterShazamKit extends FlutterShazamKitPlatform {
   Future endDetectionWithMicrophone() {
     return methodChannel.invokeMethod("endDetectionWithMicrophone");
   }
+
+  @override
+  Future resumeDetection() {
+    return methodChannel.invokeMethod("resumeDetection");
+  }
+
+  @override
+  Future pauseDetection() {
+    return methodChannel.invokeMethod("pauseDetection");
+  }
 }

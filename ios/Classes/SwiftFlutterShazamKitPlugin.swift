@@ -25,14 +25,29 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
             result(nil)
         case "startDetectionWithMicrophone":
             do{
-                configureAudio()
                 try startListening(result: result)
             }catch{
                 callbackChannel?.invokeMethod("didHasError", arguments: error.localizedDescription)
             }
         case "endDetectionWithMicrophone":
-            stopListening()
+            do {
+                try stopListening()
+            } catch {
+                callbackChannel?.invokeMethod("didHasError", arguments: "Detection end failed due to \(error)")
+            }
             result(nil)
+        case "pauseDetection":
+            do {
+                try pauseDetection()
+            } catch {
+                callbackChannel?.invokeMethod("didHasError", arguments: "Pause detection failed due to \(error)")
+            }
+        case "resumeDetection":
+            do {
+                try resumeDetection()
+            } catch {
+                callbackChannel?.invokeMethod("didHasError", arguments: "Resume detection failed due to \(error)")
+            }
         case "endSession":
             session = nil
             result(nil)
@@ -46,74 +61,75 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
 //MARK: Methods for AVAudio
 extension SwiftFlutterShazamKitPlugin{
     func configureShazamKitSession(){
-        if session == nil{
-            session = SHSession()
-            session?.delegate = self
+        session = SHSession()
+        session?.delegate = self
+    }
+    
+    func prepareAudio() throws{
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.playAndRecord, options: .interruptSpokenAudioAndMixWithOthers)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+    }
+    
+    private func generateSignature() {
+        let inputNode = audioEngine.inputNode
+        let recordingFormat = inputNode.outputFormat(forBus: .zero)
+
+        inputNode.installTap(onBus: .zero, bufferSize: 1024, format: recordingFormat) { [weak session] buffer, _ in
+            session?.matchStreamingBuffer(buffer, at: nil)
         }
     }
     
-    func addAudio(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
-        // Add the audio to the current match request
-        session?.matchStreamingBuffer(buffer, at: audioTime)
+    private func startAudioRecording() throws {
+      try audioEngine.start()
     }
-    
-    func configureAudio(){
-        let inputFormat = audioEngine.inputNode.inputFormat(forBus: 0)
-        
-        // Set an output format compatible with ShazamKit.
-        let outputFormat = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1)
-        
-        // Create a mixer node to convert the input.
-        audioEngine.attach(mixerNode)
-        
-        // Attach the mixer to the microphone input and the output of the audio engine.
-        audioEngine.connect(audioEngine.inputNode, to: mixerNode, format: inputFormat)
-        audioEngine.connect(mixerNode, to: audioEngine.outputNode, format: outputFormat)
-        
-        // Install a tap on the mixer node to capture the microphone audio.
-        mixerNode.installTap(onBus: 0,
-                             bufferSize: 8192,
-                             format: outputFormat) { buffer, audioTime in
-            // Add captured audio to the buffer used for making a match.
-            self.addAudio(buffer: buffer, audioTime: audioTime)
-        }
-    }
-    
+
     func startListening(result: FlutterResult) throws {
         guard session != nil else{
             callbackChannel?.invokeMethod("didHasError", arguments: "ShazamSession not found, please call configureShazamKitSession() first to initialize it.")
             result(nil)
             return
         }
-        callbackChannel?.invokeMethod("detectStateChanged", arguments: 1)
-        // Throw an error if the audio engine is already running.
-        guard !audioEngine.isRunning else {
-            callbackChannel?.invokeMethod("didHasError", arguments: "Audio engine is currently running, please stop the audio engine first and then try again")
+        do {
+            try prepareAudio()
+        } catch {
+            callbackChannel?.invokeMethod("didHasError", arguments: "Audio preparation failed due to \(error)")
+            result(nil)
             return
         }
-        let audioSession = AVAudioSession.sharedInstance()
-        
-        // Ask the user for permission to use the mic if required then start the engine.
-        try audioSession.setCategory(.playAndRecord)
-        audioSession.requestRecordPermission { [weak self] success in
-            guard success else {
-                self?.callbackChannel?.invokeMethod("didHasError", arguments: "Recording permission not found, please allow permission first and then try again")
-                return
-            }
-            do{
-                try self?.audioEngine.start()
-            }catch{
-                self?.callbackChannel?.invokeMethod("didHasError", arguments: "Can't start the audio engine")
-            }
+        generateSignature()
+        do {
+            try startAudioRecording()
+        } catch {
+            callbackChannel?.invokeMethod("didHasError", arguments: "Start audio recording failed due to \(error)")
+            result(nil)
+            return
         }
+        
+        callbackChannel?.invokeMethod("detectStateChanged", arguments: 1)
+        
         result(nil)
     }
     
-    func stopListening() {
-        callbackChannel?.invokeMethod("detectStateChanged", arguments: 0)
-        // Check if the audio engine is already recording.
-        mixerNode.removeTap(onBus: 0)
+    func stopListening() throws {
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setActive(false)
         audioEngine.stop()
+        audioEngine.inputNode.removeTap(onBus: 0)
+        callbackChannel?.invokeMethod("detectStateChanged", arguments: 0)
+    }
+    
+    func pauseDetection() throws {
+        print("Audio engine is running at pause time? \(audioEngine.isRunning)")
+        audioEngine.pause()
+    }
+    
+    func resumeDetection() throws {
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setActive(true)
+        try audioEngine.start()
+        print("Audio engine is running after resuming? \(audioEngine.isRunning)")
+//        generateSignature()
     }
 }
 

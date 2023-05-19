@@ -39,4 +39,12 @@ class FlutterShazamKit {
   Future endSession() {
     return FlutterShazamKitPlatform.instance.endSession();
   }
+
+  Future resumeDetection() {
+    return FlutterShazamKitPlatform.instance.resumeDetection();
+  }
+
+  Future pauseDetection() {
+    return FlutterShazamKitPlatform.instance.pauseDetection();
+  }
 }
