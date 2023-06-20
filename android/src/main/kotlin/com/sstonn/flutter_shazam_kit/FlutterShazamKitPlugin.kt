@@ -1,6 +1,7 @@
 package com.sstonn.flutter_shazam_kit
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.annotation.NonNull
@@ -13,12 +14,13 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry
 import java.lang.Exception
 
 
 /** FlutterShazamKitPlugin */
-class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
-    ActivityAware
+class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
+    PluginRegistry.RequestPermissionsResultListener
 {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -57,7 +59,6 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
-                    //TODO: handle granted permission flow
                     activityBinding?.activity?.let { ActivityCompat.requestPermissions(it,arrayOf(Manifest.permission.RECORD_AUDIO),1) }
                     return
                 }
@@ -94,4 +95,28 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
     override fun onDetachedFromActivity() {
         activityBinding = null;
     }
+    
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean
+    {
+        if (requestCode == 1)
+        {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                shazamManager.startListening()
+            }
+            else
+            {
+                // Permission denied
+//                result?.success(false)
+            }
+            return true
+        }
+        return false
+    }
+    
 }
