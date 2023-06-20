@@ -30,6 +30,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private lateinit var shazamManager: ShazamManager
     private lateinit var context: Context
     private var activityBinding: ActivityPluginBinding? = null
+    private var result: Result? = null
 
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -59,6 +60,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
+                    this.result = result
                     activityBinding?.activity?.let { ActivityCompat.requestPermissions(it,arrayOf(Manifest.permission.RECORD_AUDIO),1) }
                     return
                 }
@@ -107,12 +109,8 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                result?.success(null)
                 shazamManager.startListening()
-            }
-            else
-            {
-                // Permission denied
-//                result?.success(false)
             }
             return true
         }
