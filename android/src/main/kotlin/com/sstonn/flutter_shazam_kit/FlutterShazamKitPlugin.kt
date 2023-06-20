@@ -1,7 +1,6 @@
 package com.sstonn.flutter_shazam_kit
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
@@ -13,12 +12,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 
 
 /** FlutterShazamKitPlugin */
-class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
-    PluginRegistry.RequestPermissionsResultListener
+class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
 {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -28,14 +25,12 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private lateinit var shazamManager: ShazamManager
     private lateinit var context: Context
     private var activityBinding: ActivityPluginBinding? = null
-    private var result: Result? = null
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding)
     {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_shazam_kit")
         channel.setMethodCallHandler(this)
-        (flutterPluginBinding as PluginRegistry.Registrar).addRequestPermissionsResultListener(this)
 
         shazamManager = ShazamManager(
             MethodChannel(
@@ -62,7 +57,6 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
-                    this.result = result
                     activityBinding?.activity?.let { ActivityCompat.requestPermissions(it,arrayOf(Manifest.permission.RECORD_AUDIO),1) }
                     return
                 }
@@ -100,22 +94,22 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         activityBinding = null;
     }
     
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray): Boolean
-    {
-        if (requestCode == 1)
-        {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                shazamManager.startListening()
-                result?.success(null)
-            }
-            return true
-        }
-        return false
-    }
+//    @SuppressLint("MissingPermission")
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray): Boolean
+//    {
+//        if (requestCode == 1)
+//        {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+//            {
+//                shazamManager.startListening()
+//                result?.success(null)
+//            }
+//            return true
+//        }
+//        return false
+//    }
     
 }
