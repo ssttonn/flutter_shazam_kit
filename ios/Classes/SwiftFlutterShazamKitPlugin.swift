@@ -25,6 +25,10 @@ public class SwiftFlutterShazamKitPlugin: NSObject, FlutterPlugin {
             result(nil)
         case "startDetectionWithMicrophone":
             do{
+                let category = AVAudioSession.sharedInstance().category
+                if (category != .playAndRecord) {
+                    try AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+                }
                 configureAudio()
                 try startListening(result: result)
             }catch{

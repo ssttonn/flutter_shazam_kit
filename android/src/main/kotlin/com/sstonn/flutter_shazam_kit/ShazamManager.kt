@@ -87,13 +87,13 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
             callbackChannel.invokeMethod("detectStateChanged", 1)
             val audioSource = MediaRecorder.AudioSource.DEFAULT
             val audioFormat = AudioFormat.Builder().setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(41_000).build()
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(44100).build()
 
             audioRecord =
                 AudioRecord.Builder().setAudioSource(audioSource).setAudioFormat(audioFormat)
                     .build()
             val bufferSize = AudioRecord.getMinBufferSize(
-                41_000,
+                44100,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT
             )
@@ -103,7 +103,10 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
                 val readBuffer = ByteArray(bufferSize)
                 while (isRecording) {
                     val actualRead = audioRecord!!.read(readBuffer, 0, bufferSize)
-                    currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    if (actualRead > 0)
+                    {
+                        currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    }
                 }
             }, "AudioRecorder Thread")
             recordingThread!!.start()

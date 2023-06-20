@@ -3,7 +3,6 @@ package com.sstonn.flutter_shazam_kit
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -13,12 +12,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import java.lang.Exception
 
 
 /** FlutterShazamKitPlugin */
-class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
-    ActivityAware
+class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
 {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -30,7 +27,8 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
     private var activityBinding: ActivityPluginBinding? = null
 
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding)
+    {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_shazam_kit")
         channel.setMethodCallHandler(this)
 
@@ -43,8 +41,10 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        when (call.method) {
+    override fun onMethodCall(call: MethodCall, result: Result)
+    {
+        when (call.method)
+        {
             "configureShazamKitSession" -> shazamManager.configureShazamKitSession(
                 call.argument("developerToken"),
                 result
@@ -57,7 +57,6 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
-                    //TODO: handle granted permission flow
                     activityBinding?.activity?.let { ActivityCompat.requestPermissions(it,arrayOf(Manifest.permission.RECORD_AUDIO),1) }
                     return
                 }
@@ -75,7 +74,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
         }
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
@@ -94,4 +93,23 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler,
     override fun onDetachedFromActivity() {
         activityBinding = null;
     }
+    
+//    @SuppressLint("MissingPermission")
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray): Boolean
+//    {
+//        if (requestCode == 1)
+//        {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+//            {
+//                shazamManager.startListening()
+//                result?.success(null)
+//            }
+//            return true
+//        }
+//        return false
+//    }
+    
 }
