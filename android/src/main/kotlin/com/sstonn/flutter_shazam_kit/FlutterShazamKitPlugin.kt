@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -15,7 +14,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
-import java.lang.Exception
 
 
 /** FlutterShazamKitPlugin */
@@ -33,9 +31,11 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private var result: Result? = null
 
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding)
+    {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_shazam_kit")
         channel.setMethodCallHandler(this)
+        (flutterPluginBinding as PluginRegistry.Registrar).addRequestPermissionsResultListener(this)
 
         shazamManager = ShazamManager(
             MethodChannel(
@@ -46,8 +46,10 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        when (call.method) {
+    override fun onMethodCall(call: MethodCall, result: Result)
+    {
+        when (call.method)
+        {
             "configureShazamKitSession" -> shazamManager.configureShazamKitSession(
                 call.argument("developerToken"),
                 result
@@ -78,7 +80,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
@@ -102,8 +104,7 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
-    ): Boolean
+        grantResults: IntArray): Boolean
     {
         if (requestCode == 1)
         {
