@@ -103,7 +103,10 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
                 val readBuffer = ByteArray(bufferSize)
                 while (isRecording) {
                     val actualRead = audioRecord!!.read(readBuffer, 0, bufferSize)
-                    currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    if (actualRead > 0)
+                    {
+                        currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    }
                 }
             }, "AudioRecorder Thread")
             recordingThread!!.start()
