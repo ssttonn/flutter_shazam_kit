@@ -109,8 +109,8 @@ class FlutterShazamKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                result?.success(null)
                 shazamManager.startListening()
+                result?.success(null)
             }
             return true
         }
