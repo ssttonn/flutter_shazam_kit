@@ -70,7 +70,7 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
                         }
                     }
                 }
-            }
+    }
         } catch (e: Exception) {
             e.message?.let { onError(it) }
         }
@@ -111,21 +111,18 @@ class ShazamManager(private val callbackChannel: MethodChannel) {
 
             audioRecord?.startRecording()
             isRecording = true
-            recordingThread =
-                    Thread(
-                            {
-                                val readBuffer = ByteArray(bufferSize)
-                                while (isRecording) {
-                                    val actualRead = audioRecord!!.read(readBuffer, 0, bufferSize)
-                                    currentSession?.matchStream(
-                                            readBuffer,
-                                            actualRead,
-                                            System.currentTimeMillis()
-                                    )
-                                }
-                            },
-                            "AudioRecorder Thread"
-                    )
+            recordingThread = Thread({
+                val readBuffer = ByteArray(bufferSize)
+                while (isRecording) {
+                    val actualRead = audioRecord!!.read(readBuffer, 0, bufferSize)
+                    if (actualRead > 0) {
+                        currentSession?.matchStream(readBuffer, actualRead, System.currentTimeMillis())
+                    }
+                    else {
+                        println("Actual read is non-positive." + actualRead.toString())
+                    }
+                }
+            }, "AudioRecorder Thread")
             recordingThread!!.start()
         } catch (e: Exception) {
             e.message?.let { onError(it) }
